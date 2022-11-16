@@ -59,6 +59,10 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
         log: true,
         waiConfirmations: network.config.blockConfirmations,
     })
+    if (developmentChains.includes(network.name)) {
+        const vrfCoordinatorV2Mock = await ethers.getContract("VRFCoordinatorV2Mock")
+        await vrfCoordinatorV2Mock.addConsumer(subscriptionId, randomIpfsNft.address)
+    }
     log("--------------------------------")
     if (!developmentChains.includes(network.name) && process.env.ETHERSCAN_API_KEY) {
         log("Verifiying.....")

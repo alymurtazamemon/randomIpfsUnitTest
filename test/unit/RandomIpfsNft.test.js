@@ -23,7 +23,7 @@ const { developmentChains, networkConfig } = require("../../helper-hardhat-confi
           })
           describe("Constructor", async () => {
               it("Should initialize correctly", async () => {
-                  const mintFee = await randomIpfs.getmintFee()
+                  mintFee = await randomIpfs.getmintFee()
                   assert.equal(mintFee.toString(), 10000000000000000)
               })
           })
@@ -36,16 +36,17 @@ const { developmentChains, networkConfig } = require("../../helper-hardhat-confi
           })
           describe("fulfillRandomWords", () => {
               beforeEach(async () => {
+                  mintFee = await randomIpfs.getmintFee()
                   await randomIpfs.requestNft({ value: mintFee })
               })
-              //   it("_safeMint", async () => {
-              //       const tx = await randomIpfs.requestNft()
-              //       const txReceipt = await tx.wait(1)
-              //       const requestId = txReceipt.events[1].args.requestId
-              //       const dogOwner = await randomIpfs.s_requestIdToSender[requestId]
-              //       const newTokenId = await randomIpfs.getTokenCounter()
-              //       await expect(randomIpfs.fulfillRandomWords()._safeMint(dogOwner, newTokenId))
-              //   })
+              it("_safeMint", async () => {
+                  const tx = await randomIpfs.requestNft()
+                  const txReceipt = await tx.wait(1)
+                  const requestId = txReceipt.events[1].args.requestId
+                  const dogOwner = await randomIpfs.s_requestIdToSender[requestId]
+                  const newTokenId = await randomIpfs.getTokenCounter()
+                  await expect(randomIpfs.fulfillRandomWords()._safeMint(dogOwner, newTokenId))
+              })
               it("Should emit the NftMinted event", async () => {
                   //fulfillRandomWords(mocks being chainlink vrf)
                   //We will have to wait for fulfillRandomWorgs to be called
